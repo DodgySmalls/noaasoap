@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 
 public class Client {
     public static final String DEFAULT_DATUM = NOAAXML.DATUM_MSL; //Default to mean sea level
-    public static final String DEFAULT_DATE_BEGIN = "20150101 00:00"; //TODO UPDATE DEFAULT TO 1960
+    public static final String DEFAULT_DATE_BEGIN = "20160101 00:00"; //TODO UPDATE DEFAULT TO 1960
     public static final String DEFAULT_IN_FILE = "stationlist.dat";
     public static final String DEFAULT_OUT_PATH = "./";
     public static final String ARG_VERBOSE = "-verbose";
@@ -149,6 +149,8 @@ public class Client {
                 System.err.println("        Expected: [ <" + ARG_MONTHS_SINCE + "> <N> ]");
                 return;
             }
+
+            //TODO finish previous months option
         }
 
         if(arguments.contains(ARG_INP_FORMAT)) {
@@ -442,7 +444,7 @@ public class Client {
             symbol.addTextNode(stationId);
             name = soapFactory.createName(NOAAXML.ELEM_DATE_BEGIN);
             symbol = bodyElement.addChildElement(name);
-            symbol.addTextNode("20160301 00:00");
+            symbol.addTextNode(mRequestStartDate);
             name = soapFactory.createName(NOAAXML.ELEM_DATE_END);
             symbol = bodyElement.addChildElement(name);
             symbol.addTextNode(mRequestEndDate);
