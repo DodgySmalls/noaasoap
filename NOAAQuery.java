@@ -105,6 +105,13 @@ public class NOAAQuery {
                     return;
                 }
             }
+            try {
+	            if(outFileDesc.getDirectoryName().charAt(outFileDesc.getDirectoryName().length() - 1) != '/') {
+	            	outFileDesc.setDirectoryName(outFileDesc.getDirectoryName() + "/");
+	            }
+	        } catch (Exception e) {
+	        	printError("[ERROR] Error while parsing the given output directory name.");
+	        }
         }
 
         try {
@@ -118,7 +125,6 @@ public class NOAAQuery {
 		        	SOAPMessage message = prepareMessage(request);
 		        	SOAPMessage response = connection.call(message, endpoint);
 		        	outFileDesc.setFileName(id);
-		        	outFileDesc.addExtensionToFileName();
 		        	handleResponse(response, outFileDesc);
 		        } catch (SOAPException e) {
 		            printError("[ERRROR] " + e.toString());
@@ -139,16 +145,15 @@ public class NOAAQuery {
 			//Raw passthrough
 			if (globalFlags.contains(Flag.ENABLE_RAW_OUTPUT)) {
 				try {
-					String[] subStrings = desc.getFileName().split("."); //split on period
-                	if(subStrings[0] != null) {
-						FileOutputStream rawOut = new FileOutputStream (subStrings[0] + "_response.xml");
-	                    response.writeTo(rawOut);
-	                    rawOut.close();
-                	}
+					FileOutputStream rawOut = new FileOutputStream (desc.getDirectoryName() + desc.getFileName() + "_response.xml");
+                    response.writeTo(rawOut);
+                    rawOut.close();
 				} catch (IOException e) {
 					printError("[ERROR] Exception occurred while attempting to write raw output.\n" + e.toString());
 				}
 			}
+
+			desc.addExtensionToFileName();
 
             if (responseBody.hasFault()) {
                 SOAPFault fault = responseBody.getFault();
@@ -171,7 +176,7 @@ public class NOAAQuery {
                 FileOutputStream fOut;
 
                 if(globalFlags.contains(Flag.ENABLE_FILE_OUTPUT)) {
-                	fOut = new FileOutputStream(desc.getFileName());
+                	fOut = new FileOutputStream(desc.getDirectoryName() + desc.getFileName());
                 	if (iterator.hasNext()) {
 	                    se = (SOAPElement) iterator.next();
 	                    iterator = se.getChildElements();
@@ -343,7 +348,6 @@ public class NOAAQuery {
     |     </data>
     |     ...
     |*/
-
     public static void writeItemNode(SOAPElement se, FileOutputStream fOut, FileDescription.Format format, String datum) { 
         Iterator iterator;
         String tagName, timeStamp, csValues, finalOutput;
@@ -539,7 +543,7 @@ public class NOAAQuery {
             }
             request.setStart(NOAAXML.cleanTimeStamp(rawTimeStr));
             if(!NOAAXML.verifyTimeStamp(request.getStart())) {
-                printError("[ERROR] Starting date was requested but (" + rawTimeStr + ") could not be parsed as a valid timestamp");
+                printError("[ERROR] Starting date was requested but (" + rawTimeStr + ") could not be parsed as a valid timestamp.");
                 printError("        Expected: [ <" + ARG_REQUEST_STARTDATE + "> <YYYYMMDD HH:MM> ]");
                 System.exit(0);
             }
@@ -563,7 +567,7 @@ public class NOAAQuery {
             }
             request.setEnd(NOAAXML.cleanTimeStamp(rawTimeStr));
             if(!NOAAXML.verifyTimeStamp(request.getEnd())) {
-                printError("[ERROR] End date was requested but (" + rawTimeStr + ") could not be parsed as a valid timestamp");
+                printError("[ERROR] End date was requested but (" + rawTimeStr + ") could not be parsed as a valid timestamp.");
                 printError("        Expected: [ <" + ARG_REQUEST_ENDDATE + "> <YYYYMMDD HH:MM> ]");
                 System.exit(0);
             }
@@ -614,12 +618,12 @@ public class NOAAQuery {
                 } else if(ARG_XML.equals(formatStr.toUpperCase())) {
                     inFileDesc.setFormat(FileDescription.Format.XML);
                 } else {
-                    printError("[ERROR] Input format was requested but (" + formatStr + ") could not be parsed as a valid format");
+                    printError("[ERROR] Input format was requested but (" + formatStr + ") could not be parsed as a valid format.");
                     printError("        Expected: [ <" + ARG_INP_FORMAT + "> <" + ARG_CSV + "|" + ARG_XML +"> ]");
                     System.exit(0);
                 }
             } catch(Exception e) {
-                printError("[ERROR] Input format was requested but not specified");
+                printError("[ERROR] Input format was requested but not specified.");
                 printError("        Expected: [ <" + ARG_INP_FORMAT + "> <" + ARG_CSV + "|" + ARG_XML +"> ]");
                 System.exit(0);
             }
@@ -639,12 +643,12 @@ public class NOAAQuery {
                 } else if(ARG_XML.equals(formatStr.toUpperCase())) {
                     outFileDesc.setFormat(FileDescription.Format.XML);
                 } else {
-                    printError("[ERROR] Output format was requested but (" + formatStr + ") could not be parsed as a valid format");
+                    printError("[ERROR] Output format was requested but (" + formatStr + ") could not be parsed as a valid format.");
                     printError("        Expected: [ <" + ARG_OUT_FORMAT + "> <" + ARG_CSV + "|" + ARG_XML +"> ]");
                     System.exit(0);
                 }
             } catch(Exception e) {
-                printError("[ERROR] Output format was requested but not specified");
+                printError("[ERROR] Output format was requested but not specified.");
                 printError("        Expected: [ <" + ARG_OUT_FORMAT + "> <" + ARG_CSV + "|" + ARG_XML +"> ]");
                 System.exit(0);
             }
