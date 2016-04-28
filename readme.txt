@@ -6,7 +6,8 @@ NOAAQuery
 	ARGS may be any of the following:
 		-debug              :  enables the debug console
 		-verbose            :  enables additional console output
-		-suppress-console   :  overrides other console commands, and silences console output
+		-suppress-console   :  overrides other console commands, and silences normal console use, errors will still print
+		-suppress-errors    :  stops errors from printing, useful if you are piping console output, but not recommended
 
 		-raw                :  outputs raw responses from the NOAA server to files with the name STATIONID_response.xml
 		-raw-only           :  disables normal file output, but still outputs the raw responses as above
