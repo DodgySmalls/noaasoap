@@ -1,5 +1,4 @@
 9462620,   ALA,      16,  UNALASKA 
-
 9455500,   ALA,      17,  SELDOVIA 
 9455090,   ALA,      18,  SEWARD 
 9454050,   ALA,      19,  CORDOVA 
@@ -13,10 +12,10 @@
 9447130,   CWP,      27,  SEATTLE 
 9439040,   CWP,      28,  ASTORIA (TONGUE POINT) 
 9435380,   CWP,      29,  SOUTH BEACH 
-8761847,   SWP,      30,  CRESCENT CITY  (New NOAA ID is Cresent City Air Gap, is same?)
+9419750,   SWP,      30,  CRESCENT CITY 
 9414290,   SWP,      31,  SAN FRANCISCO (three others in NOAA system, Pier 17, San Francisco Bay     9414296, San Francisco-Oakland Bay Bridge Air Gap     9414304, San Francisco Pier 1     9414311) 
 9414750,   SWP,      32,  ALAMEDA (NAVAL AIR STATION) 
-8771972,   SWP,      33,  PORT SAN LUIS  (NOAA ID is San Luis Pass)
+9412110,   SWP,      33,  PORT SAN LUIS  (NOAA ID is San Luis Pass)
 9410840,   SWP,      34,  SANTA MONICA (MUNICIPAL PIER) 
 9410660,   SWP,      35,  LOS ANGELES (three others in NOAA system, Los Angeles Pier J     9410665, Los Angeles Pier 400     9410666, Los Angeles Pier F     9410670)
 9410230,   SWP,      36,  LA JOLLA (SCRIPPS PIER) 
