@@ -17,7 +17,7 @@ import java.util.*; // TODO precise date imports
 
 public class NOAAQuery {
 	public static final String DEFAULT_DATUM = NOAAXML.DATUM_MSL;
-	public static final String DEFAULT_DATE_BEGIN = "19600101 00:00";
+	public static final String DEFAULT_DATE_BEGIN = "19500101 00:00";
     public static final String DEFAULT_IN_FILE = "stationlist.dat";
     public static final String DEFAULT_OUT_PATH = "./";
 
