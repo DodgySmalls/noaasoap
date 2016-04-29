@@ -120,7 +120,7 @@ public class NOAAQuery {
 	        URL endpoint = new URL("http://opendap.co-ops.nos.noaa.gov/axis/services/WaterLevelVerifiedMonthly");
 	        for(String id : stations) {
 	        	try {
-	        		print("Querying station#" + id);
+	        		print("Querying station: " + id);
 	        		request.setStation(id);
 		        	SOAPMessage message = prepareMessage(request);
 		        	SOAPMessage response = connection.call(message, endpoint);
@@ -601,8 +601,10 @@ public class NOAAQuery {
                 System.exit(0);
             }
 
+            request.setStart(NOAAXML.nMonthsAgoToString(NOAAXML.DATABASE_TIMEZONE, monthCount));
             arguments.remove(index);
             arguments.remove(index);
+
             //TODO finish previous months option
         }
 
