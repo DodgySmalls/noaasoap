@@ -17,23 +17,24 @@ ARGS may be any of the following:
 
 MARGS may be any of the following, but must be immediately followed by the value they use:
 
-		-datum <NOAA_DATUM> : 
-		specify the datum to retrieve (https://tidesandcurrents.noaa.gov/datum_options.html) (default: MSL)
+	-datum <NOAA_DATUM> : 
+	specify the datum to retrieve (https://tidesandcurrents.noaa.gov/datum_options.html) (default: MSL)
 		
-		-from <DATE>        : 
-		specify the start point of the data to retrieve (default: 1960/01/01)														
-		-to   <DATE>        :
-		specify the end point of the data to retrieve (default: CURRENT_DATE)
+	-from <DATE>        : 
+	specify the start point of the data to retrieve (default: 1960/01/01)							
 		
-		-months <N>         : 
-		specify the retrieval of datapoints of N months before the present
+	-to   <DATE>        :
+	specify the end point of the data to retrieve (default: CURRENT_DATE)
+		
+	-months <N>         : 
+	specify the retrieval of datapoints of N months before the present
 
-		-inpf <XML|CSV>     : 
-		specify the format of the file to be read (default: CSV)
+	-inpf <XML|CSV>     : 
+	specify the format of the file to be read (default: CSV)
 		
-		-outf <XML|CSV>     : 
-		specify the format of the file to be written (default: CSV)
-
+	-outf <XML|CSV>     : 
+	specify the format of the file to be written (default: CSV)
+	
 
 The default operation of NOAAQuery reads a comma separated list, retrieves MSL data from 1960/01/01, and writes the values to a comma separated list
 
