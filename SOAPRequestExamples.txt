@@ -1,0 +1,53 @@
+The NOAA sample code outputs requests like this:
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+	<SOAP-ENV:Header/>
+	<SOAP-ENV:Body>
+		<water:getWLVerifiedMonthlyAndMetadata xmlns:water="http://opendap.co-ops.nos.noaa.gov/axis/webservices/waterlevelverifiedmonthly/wsdl">
+			<stationId>8454000</stationId>
+			<beginDate>20150101 00:00</beginDate>
+			<endDate>20150501 00:00</endDate>
+			<datum>MLLW</datum><unit>0</unit>
+			<timeZone>0</timeZone>
+		</water:getWLVerifiedMonthlyAndMetadata>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+The NOAAQuery class outputs queries like this:
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:water="http://opendap.co-ops.nos.noaa.gov/">
+	<SOAP-ENV:Header/>
+	<SOAP-ENV:Body>
+		<water:getWLVerifiedMonthlyAndMetadata xmlns:water="http://opendap.co-ops.nos.noaa.gov/axis/webservices/waterlevelverifiedmonthly/wsdl">
+			<stationId>8454000</stationId>
+			<beginDate>20150101 00:00</beginDate>
+			<endDate>20150501 00:00</endDate>
+			<datum>MLLW</datum>
+			<unit>0</unit>
+			<timeZone>0</timeZone>
+		</water:getWLVerifiedMonthlyAndMetadata>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+After delving into SOAP protocols I am not certain of the significance of envelope/header metadata, it appears the NOAAQuery code is partially redundant.
+
+However, the NOAA sample code does *not* successfully generate soap messages if the following method is not called:
+	
+	SOAPMessage message.writeTo(CONSOLE);
+
+I suspect that that when this method is called, it repairs the header of the SOAPMessage object, resulting in the final request output by the sample code.
+For best practice I have modified the code which generates the SOAPMessage so that it does not need to be printed to console.
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:water="http://opendap.co-ops.nos.noaa.gov/">
+	<SOAP-ENV:Header/>
+	<SOAP-ENV:Body>
+		<water:getWLVerifiedMonthlyAndMetadata xmlns:water="http://opendap.co-ops.nos.noaa.gov/axis/webservices/waterlevelverifiedmonthly/wsdl">
+		<stationId>9462620</stationId>
+		<beginDate>20160101 00:00</beginDate>
+		<endDate>20160428 08:38</endDate>
+		<datum>MSL</datum>
+		<unit>0</unit>
+		<timeZone>GMT</timeZone>
+		</water:getWLVerifiedMonthlyAndMetadata>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

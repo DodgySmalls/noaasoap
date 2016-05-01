@@ -1,6 +1,7 @@
 // 
 // Make a query using SOAP to the NOAA Sea Level data base.
-//
+// This code is an extension of NOAA sample client code: http://opendap.co-ops.nos.noaa.gov/axis/webservices/waterlevelverifiedmonthly/samples/client.html
+// The sample code contained potential issues which are discussed in the repo file "SoapRequestExamples.txt"
 
 
 package NOAAsoap;
@@ -13,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.*; // TODO precise date imports
 
 public class NOAAQuery {
 	public static final String DEFAULT_DATUM = NOAAXML.DATUM_MSL;
