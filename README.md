@@ -39,18 +39,21 @@ The default operation of NOAAQuery reads a comma separated list, retrieves MSL d
 
 Notes on in/out files:
 
-	The use of "CSV" is loose. 
-	NOAAQuery will read a comma separated list with one item per line, where the NOAA stationId is the first item of that list.
+The use of "CSV" is loose. 
+NOAAQuery will read a comma separated list with one item per line, where the NOAA stationId is the first item of that list.
+
 		NOAA_ID, anything, anything, ...
 		NOAA_ID, anything, anything, ...
 		...
 
-	The output "CSV" format is:
+The output "CSV" format is:
+	
 		YYYY MM DD, DATUM_RETRIEVED
 		YYYY MM DD, DATUM_RETRIEVED
 		...
 
-	The input XML format traverses XML looking for any nodes labelled "NOAAid", and reads their values
+The input XML format traverses XML looking for any nodes labelled "NOAAid", and reads their values
+
 		<data>
 			<etc>
 				...
@@ -60,7 +63,8 @@ Notes on in/out files:
 			</etc>
 		</data>
 
-	The output XML format is:
+The output XML format is:
+
 		<data>
 			<date>YYYYMMDD</date>
 			<value>N</value>
