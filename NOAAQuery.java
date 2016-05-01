@@ -1,7 +1,7 @@
 // 
 // Make a query using SOAP to the NOAA Sea Level data base.
 // This code is an extension of NOAA sample client code: http://opendap.co-ops.nos.noaa.gov/axis/webservices/waterlevelverifiedmonthly/samples/client.html
-// The sample code contained potential issues which are discussed in the repo file "SoapRequestExamples.txt"
+// The sample code contained potential issues which are discussed in the repo file "SOAPRequestExamples.txt"
 
 
 package NOAAsoap;
@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 public class NOAAQuery {
-	public static final String DEFAULT_DATUM = NOAAXML.DATUM_MSL;
-	public static final String DEFAULT_DATE_BEGIN = "19500101 00:00";
+    public static final String DEFAULT_DATUM = NOAAXML.DATUM_MSL;
+    public static final String DEFAULT_DATE_BEGIN = "19500101 00:00";
     public static final String DEFAULT_IN_FILE = "stationlist.dat";
     public static final String DEFAULT_OUT_PATH = "./";
 
@@ -41,50 +41,50 @@ public class NOAAQuery {
     public static final String ARG_CSV = "CSV";
     public static final String ARG_XML = "XML";
 
-	private enum Flag {
-		NIL, ENABLE_RAW_OUTPUT, ENABLE_FILE_OUTPUT, ENABLE_CONSOLE, ENABLE_VERBOSE_CONSOLE, ENABLE_DEBUG_CONSOLE, ENABLE_ERROR_CONSOLE
-	}
-	private static EnumSet<Flag> globalFlags = EnumSet.of(Flag.NIL);
-	private static FileDescription inFileDesc = new FileDescription();
-	private static FileDescription outFileDesc = new FileDescription();
-	private static Request request = new Request();
+    private enum Flag {
+        NIL, ENABLE_RAW_OUTPUT, ENABLE_FILE_OUTPUT, ENABLE_CONSOLE, ENABLE_VERBOSE_CONSOLE, ENABLE_DEBUG_CONSOLE, ENABLE_ERROR_CONSOLE
+    }
+    private static EnumSet<Flag> globalFlags = EnumSet.of(Flag.NIL);
+    private static FileDescription inFileDesc = new FileDescription();
+    private static FileDescription outFileDesc = new FileDescription();
+    private static Request request = new Request();
 
-	public static void main(String[] args) {
-		List<String> stations = new ArrayList<String>();
-		
-		if(parseArguments(parseFlags(new CaseInsensitiveList(Arrays.asList(args)))).size() > 0){
-			printDebug("Excess arguments");
-		}
+    public static void main(String[] args) {
+        List<String> stations = new ArrayList<String>();
+        
+        if(parseArguments(parseFlags(new CaseInsensitiveList(Arrays.asList(args)))).size() > 0){
+            printDebug("Excess arguments");
+        }
 
-		defaults(); //values which weren't specified are loaded
+        defaults(); //values which weren't specified are loaded
 
-		printDebug(inFileDesc.toString());
-		printDebug(outFileDesc.toString());
-		printDebug(request.toString());
-		if(globalFlags.contains(Flag.ENABLE_DEBUG_CONSOLE)) {
-			System.out.print("[DEBUG]");
-			if(globalFlags.contains(Flag.ENABLE_CONSOLE)) {
-				System.out.print("ENABLE_CONSOLE");
-			} 
-			if(globalFlags.contains(Flag.ENABLE_VERBOSE_CONSOLE)) {
-				System.out.print("|ENABLE_VERBOSE_CONSOLE");
-			}
-			if(globalFlags.contains(Flag.ENABLE_DEBUG_CONSOLE)) {
-				System.out.print("|ENABLE_DEBUG_CONSOLE");
-			}
-			if(globalFlags.contains(Flag.ENABLE_ERROR_CONSOLE)) {
-				System.out.print("|ENABLE_ERROR_CONSOLE");
-			}
-			if(globalFlags.contains(Flag.ENABLE_FILE_OUTPUT)) {
-				System.out.print("|ENABLE_FILE_OUTPUT");
-			}
-			if(globalFlags.contains(Flag.ENABLE_RAW_OUTPUT)) {
-				System.out.print("|ENABLE_RAW_OUTPUT");
-			}
-			System.out.print("\n");
-		}
+        printDebug(inFileDesc.toString());
+        printDebug(outFileDesc.toString());
+        printDebug(request.toString());
+        if(globalFlags.contains(Flag.ENABLE_DEBUG_CONSOLE)) {
+            System.out.print("[DEBUG]");
+            if(globalFlags.contains(Flag.ENABLE_CONSOLE)) {
+                System.out.print("ENABLE_CONSOLE");
+            } 
+            if(globalFlags.contains(Flag.ENABLE_VERBOSE_CONSOLE)) {
+                System.out.print("|ENABLE_VERBOSE_CONSOLE");
+            }
+            if(globalFlags.contains(Flag.ENABLE_DEBUG_CONSOLE)) {
+                System.out.print("|ENABLE_DEBUG_CONSOLE");
+            }
+            if(globalFlags.contains(Flag.ENABLE_ERROR_CONSOLE)) {
+                System.out.print("|ENABLE_ERROR_CONSOLE");
+            }
+            if(globalFlags.contains(Flag.ENABLE_FILE_OUTPUT)) {
+                System.out.print("|ENABLE_FILE_OUTPUT");
+            }
+            if(globalFlags.contains(Flag.ENABLE_RAW_OUTPUT)) {
+                System.out.print("|ENABLE_RAW_OUTPUT");
+            }
+            System.out.print("\n");
+        }
 
-		//Verify/Load input file
+        //Verify/Load input file
         try {
             inFileDesc.setFileName( (inFileDesc.getFileName() == null) ? DEFAULT_IN_FILE : inFileDesc.getFileName() );
             stations = loadStationsFromFile(inFileDesc);
@@ -111,54 +111,54 @@ public class NOAAQuery {
                 }
             }
             try {
-	            if(outFileDesc.getDirectoryName().charAt(outFileDesc.getDirectoryName().length() - 1) != '/') {
-	            	outFileDesc.setDirectoryName(outFileDesc.getDirectoryName() + "/");
-	            }
-	        } catch (Exception e) {
-	        	printError("[ERROR] Error while parsing the given output directory name.");
-	        }
+                if(outFileDesc.getDirectoryName().charAt(outFileDesc.getDirectoryName().length() - 1) != '/') {
+                    outFileDesc.setDirectoryName(outFileDesc.getDirectoryName() + "/");
+                }
+            } catch (Exception e) {
+                printError("[ERROR] Error while parsing the given output directory name.");
+            }
         }
 
         try {
-	        SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
-	        SOAPConnection connection = soapConnectionFactory.createConnection();
-	        URL endpoint = new URL("http://opendap.co-ops.nos.noaa.gov/axis/services/WaterLevelVerifiedMonthly");
-	        for(String id : stations) {
-	        	try {
-	        		print("Querying station: " + id);
-	        		request.setStation(id);
-		        	SOAPMessage message = prepareMessage(request);
-		        	SOAPMessage response = connection.call(message, endpoint);
-		        	outFileDesc.setFileName(id);
-		        	handleResponse(response, outFileDesc);
-		        } catch (SOAPException e) {
-		            printError("[ERRROR] " + e.toString());
-		        }
-	        }
-	        connection.close();
-    	} catch (SOAPException e) {
+            SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
+            SOAPConnection connection = soapConnectionFactory.createConnection();
+            URL endpoint = new URL("http://opendap.co-ops.nos.noaa.gov/axis/services/WaterLevelVerifiedMonthly");
+            for(String id : stations) {
+                try {
+                    print("Querying station: " + id);
+                    request.setStation(id);
+                    SOAPMessage message = prepareMessage(request);
+                    SOAPMessage response = connection.call(message, endpoint);
+                    outFileDesc.setFileName(id);
+                    handleResponse(response, outFileDesc);
+                } catch (SOAPException e) {
+                    printError("[ERRROR] " + e.toString());
+                }
+            }
+            connection.close();
+        } catch (SOAPException e) {
             printError("[ERRROR] " + e.toString());
         } catch (IOException io) {
             printError("[ERROR] " + io.toString());
         }
-	}
+    }
 
-	private static void handleResponse(SOAPMessage response, FileDescription desc) {
-		try{
-			SOAPBody responseBody = response.getSOAPBody();
-			
-			//Raw passthrough
-			if (globalFlags.contains(Flag.ENABLE_RAW_OUTPUT)) {
-				try {
-					FileOutputStream rawOut = new FileOutputStream (desc.getDirectoryName() + desc.getFileName() + "_response.xml");
+    private static void handleResponse(SOAPMessage response, FileDescription desc) {
+        try{
+            SOAPBody responseBody = response.getSOAPBody();
+            
+            //Raw passthrough
+            if (globalFlags.contains(Flag.ENABLE_RAW_OUTPUT)) {
+                try {
+                    FileOutputStream rawOut = new FileOutputStream (desc.getDirectoryName() + desc.getFileName() + "_response.xml");
                     response.writeTo(rawOut);
                     rawOut.close();
-				} catch (IOException e) {
-					printError("[ERROR] Exception occurred while attempting to write raw output.\n" + e.toString());
-				}
-			}
+                } catch (IOException e) {
+                    printError("[ERROR] Exception occurred while attempting to write raw output.\n" + e.toString());
+                }
+            }
 
-			desc.addExtensionToFileName();
+            desc.addExtensionToFileName();
 
             if (responseBody.hasFault()) {
                 SOAPFault fault = responseBody.getFault();
@@ -181,62 +181,62 @@ public class NOAAQuery {
                 FileOutputStream fOut;
 
                 if(globalFlags.contains(Flag.ENABLE_FILE_OUTPUT)) {
-                	fOut = new FileOutputStream(desc.getDirectoryName() + desc.getFileName());
-                	if (iterator.hasNext()) {
-	                    se = (SOAPElement) iterator.next();
-	                    iterator = se.getChildElements();
-	                    while (iterator.hasNext()) {
-	                        se = (SOAPElement) iterator.next();
-	                        tagName = se.getElementName().getLocalName();
-	                        if (NOAAXML.NODE_DATA.equals(tagName)) {
-	                            iterator2 = se.getChildElements();
-	                            while (iterator2.hasNext()) {
-	                                se = (SOAPElement) iterator2.next();
-	                                tagName = se.getElementName().getLocalName();
-	                                if(NOAAXML.NODE_ITEM.equals(tagName) && globalFlags.contains(Flag.ENABLE_FILE_OUTPUT)) {
-	                                    writeItemNode(se, fOut, outFileDesc.getFormat(), request.getDatum());
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
-	                fOut.close();
+                    fOut = new FileOutputStream(desc.getDirectoryName() + desc.getFileName());
+                    if (iterator.hasNext()) {
+                        se = (SOAPElement) iterator.next();
+                        iterator = se.getChildElements();
+                        while (iterator.hasNext()) {
+                            se = (SOAPElement) iterator.next();
+                            tagName = se.getElementName().getLocalName();
+                            if (NOAAXML.NODE_DATA.equals(tagName)) {
+                                iterator2 = se.getChildElements();
+                                while (iterator2.hasNext()) {
+                                    se = (SOAPElement) iterator2.next();
+                                    tagName = se.getElementName().getLocalName();
+                                    if(NOAAXML.NODE_ITEM.equals(tagName) && globalFlags.contains(Flag.ENABLE_FILE_OUTPUT)) {
+                                        writeItemNode(se, fOut, outFileDesc.getFormat(), request.getDatum());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    fOut.close();
                 }
 
                 if(globalFlags.contains(Flag.ENABLE_VERBOSE_CONSOLE)) {
-	                iterator = responseBody.getChildElements();
-	                if (iterator.hasNext()) {
-	                    se = (SOAPElement) iterator.next();
-	                    iterator = se.getChildElements();
-	                    while (iterator.hasNext()) {
-	                        se = (SOAPElement) iterator.next();
-	                        printMetadata(se);
-	                        tagName = se.getElementName().getLocalName();
-	                        if (NOAAXML.NODE_DATA.equals(tagName)) {
-	                            iterator2 = se.getChildElements();
-	                            while (iterator2.hasNext()) {
-	                                se = (SOAPElement) iterator2.next();
-	                                tagName = se.getElementName().getLocalName();
-	                                iterator3 = se.getChildElements();
-	                                while (iterator3.hasNext()) {
-	                                    se = (SOAPElement) iterator3.next();
-	                                    if(globalFlags.contains(Flag.ENABLE_VERBOSE_CONSOLE)) {
-	                                        printData(se);
-	                                    }
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
-           	 	}
+                    iterator = responseBody.getChildElements();
+                    if (iterator.hasNext()) {
+                        se = (SOAPElement) iterator.next();
+                        iterator = se.getChildElements();
+                        while (iterator.hasNext()) {
+                            se = (SOAPElement) iterator.next();
+                            printMetadata(se);
+                            tagName = se.getElementName().getLocalName();
+                            if (NOAAXML.NODE_DATA.equals(tagName)) {
+                                iterator2 = se.getChildElements();
+                                while (iterator2.hasNext()) {
+                                    se = (SOAPElement) iterator2.next();
+                                    tagName = se.getElementName().getLocalName();
+                                    iterator3 = se.getChildElements();
+                                    while (iterator3.hasNext()) {
+                                        se = (SOAPElement) iterator3.next();
+                                        if(globalFlags.contains(Flag.ENABLE_VERBOSE_CONSOLE)) {
+                                            printData(se);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-		}catch(Exception e) {
-			printError("[ERROR] " + e.toString());
-		}
-	}
+        }catch(Exception e) {
+            printError("[ERROR] " + e.toString());
+        }
+    }
 
-	public static SOAPMessage prepareMessage(Request r) {
-		SOAPMessage message = null;
+    public static SOAPMessage prepareMessage(Request r) {
+        SOAPMessage message = null;
         try {
             SOAPFactory soapFactory = SOAPFactory.newInstance();
 
@@ -278,9 +278,9 @@ public class NOAAQuery {
             printError("[ERROR] " + e.toString());
         }
         return message;
-	}
+    }
 
-	/* Reads an input file (CSV or XML) and returns a list of NOAA station ids from that input file
+    /* Reads an input file (CSV or XML) and returns a list of NOAA station ids from that input file
     |
     |*/
     public static List<String> loadStationsFromFile(FileDescription fd) throws Exception {
@@ -466,14 +466,14 @@ public class NOAAQuery {
         }
     }
 
-	private static CaseInsensitiveList parseFlags(CaseInsensitiveList arguments) {
-		//By default the regular and error consoles are enabled, and file output is enabled.
-		globalFlags.add(Flag.ENABLE_CONSOLE);
-		globalFlags.add(Flag.ENABLE_ERROR_CONSOLE);
-		globalFlags.add(Flag.ENABLE_FILE_OUTPUT);
+    private static CaseInsensitiveList parseFlags(CaseInsensitiveList arguments) {
+        //By default the regular and error consoles are enabled, and file output is enabled.
+        globalFlags.add(Flag.ENABLE_CONSOLE);
+        globalFlags.add(Flag.ENABLE_ERROR_CONSOLE);
+        globalFlags.add(Flag.ENABLE_FILE_OUTPUT);
 
-		//Consoles
-		if(arguments.contains(ARG_DEBUG)) {
+        //Consoles
+        if(arguments.contains(ARG_DEBUG)) {
             globalFlags.add(Flag.ENABLE_DEBUG_CONSOLE);
             System.out.print("\nDEBUG ENABLED\nargs:");
             for(String s : arguments) {
@@ -487,14 +487,14 @@ public class NOAAQuery {
             arguments.remove(ARG_VERBOSE);
         }
         if(arguments.contains(ARG_SUPPRESS_CONSOLE)) {
-        	globalFlags.remove(Flag.ENABLE_CONSOLE);
-        	globalFlags.remove(Flag.ENABLE_VERBOSE_CONSOLE);
-        	globalFlags.remove(Flag.ENABLE_DEBUG_CONSOLE);
-        	arguments.remove(ARG_SUPPRESS_CONSOLE);
+            globalFlags.remove(Flag.ENABLE_CONSOLE);
+            globalFlags.remove(Flag.ENABLE_VERBOSE_CONSOLE);
+            globalFlags.remove(Flag.ENABLE_DEBUG_CONSOLE);
+            arguments.remove(ARG_SUPPRESS_CONSOLE);
         }
         if(arguments.contains(ARG_SUPPRESS_ERROR_CONSOLE)) {
-        	globalFlags.remove(Flag.ENABLE_ERROR_CONSOLE);
-        	arguments.remove(ARG_SUPPRESS_ERROR_CONSOLE);
+            globalFlags.remove(Flag.ENABLE_ERROR_CONSOLE);
+            arguments.remove(ARG_SUPPRESS_ERROR_CONSOLE);
         }
 
         //Files
@@ -663,11 +663,11 @@ public class NOAAQuery {
             arguments.remove(index);
         }
 
-		return arguments;
-	}
+        return arguments;
+    }
 
-	private static CaseInsensitiveList parseArguments(CaseInsensitiveList arguments) {
-		if(arguments.size() > 0) {
+    private static CaseInsensitiveList parseArguments(CaseInsensitiveList arguments) {
+        if(arguments.size() > 0) {
             inFileDesc.setFileName(arguments.get(0));
             arguments.remove(0);
         }
@@ -677,55 +677,55 @@ public class NOAAQuery {
             arguments.remove(0);
         }
 
-		return arguments;
-	}
+        return arguments;
+    }
 
-	private static void defaults() {
-		if(request.getStart() == null) {
-			request.setStart(DEFAULT_DATE_BEGIN);
-		}
-		if(request.getEnd() == null) {
-			request.setEnd(NOAAXML.currentTimeToString(NOAAXML.DATABASE_TIMEZONE));
-		}
-		if(request.getDatum() == null) {
-			request.setDatum(DEFAULT_DATUM);
-		}
+    private static void defaults() {
+        if(request.getStart() == null) {
+            request.setStart(DEFAULT_DATE_BEGIN);
+        }
+        if(request.getEnd() == null) {
+            request.setEnd(NOAAXML.currentTimeToString(NOAAXML.DATABASE_TIMEZONE));
+        }
+        if(request.getDatum() == null) {
+            request.setDatum(DEFAULT_DATUM);
+        }
 
-		if(inFileDesc.getFileName() == null) {
-			inFileDesc.setFileName(DEFAULT_IN_FILE);
-		}
-		if(inFileDesc.getFormat() == null) {
-			inFileDesc.setFormat(FileDescription.Format.CSV);
-		}
-		if(outFileDesc.getDirectoryName() == null) {
-			outFileDesc.setDirectoryName(DEFAULT_OUT_PATH);
-		}
-		if(outFileDesc.getFormat() == null) {
-			outFileDesc.setFormat(FileDescription.Format.CSV);
-		}
-	}
+        if(inFileDesc.getFileName() == null) {
+            inFileDesc.setFileName(DEFAULT_IN_FILE);
+        }
+        if(inFileDesc.getFormat() == null) {
+            inFileDesc.setFormat(FileDescription.Format.CSV);
+        }
+        if(outFileDesc.getDirectoryName() == null) {
+            outFileDesc.setDirectoryName(DEFAULT_OUT_PATH);
+        }
+        if(outFileDesc.getFormat() == null) {
+            outFileDesc.setFormat(FileDescription.Format.CSV);
+        }
+    }
 
-	protected static void print(String message) {
-		if(globalFlags.contains(Flag.ENABLE_CONSOLE)) {
-			System.out.println(message);
-		}
-	}
+    protected static void print(String message) {
+        if(globalFlags.contains(Flag.ENABLE_CONSOLE)) {
+            System.out.println(message);
+        }
+    }
 
-	protected static void printDebug(String message) {
-		if(globalFlags.contains(Flag.ENABLE_DEBUG_CONSOLE)) {
-			System.out.println("[DEBUG]" + message);
-		}
-	}
+    protected static void printDebug(String message) {
+        if(globalFlags.contains(Flag.ENABLE_DEBUG_CONSOLE)) {
+            System.out.println("[DEBUG]" + message);
+        }
+    }
 
-	protected static void printVerbose(String message) {
-		if(globalFlags.contains(Flag.ENABLE_VERBOSE_CONSOLE)) {
-			System.out.println(message);
-		}
-	}
+    protected static void printVerbose(String message) {
+        if(globalFlags.contains(Flag.ENABLE_VERBOSE_CONSOLE)) {
+            System.out.println(message);
+        }
+    }
 
-	protected static void printError(String message) {
-		if(globalFlags.contains(Flag.ENABLE_ERROR_CONSOLE)) {
-			System.err.println(message);
-		}
-	}
+    protected static void printError(String message) {
+        if(globalFlags.contains(Flag.ENABLE_ERROR_CONSOLE)) {
+            System.err.println(message);
+        }
+    }
 }
