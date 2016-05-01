@@ -21,6 +21,7 @@ public class NOAAQuery {
     public static final String DEFAULT_IN_FILE = "stationlist.dat";
     public static final String DEFAULT_OUT_PATH = "./";
 
+    public static final String ARG_HELP = "--help";
     public static final String ARG_DEBUG = "-debug";
     public static final String ARG_VERBOSE = "-verbose";
     public static final String ARG_SUPPRESS_ERROR_CONSOLE = "-suppress-errors";
@@ -40,6 +41,11 @@ public class NOAAQuery {
 
     public static final String ARG_CSV = "CSV";
     public static final String ARG_XML = "XML";
+
+    public static final String OUTPUT_HELP = "\nusage: NOAAQuery [inputFilename.ext [outputDirectory]]\n["+
+                                                ARG_DEBUG+"] ["+ARG_VERBOSE+"] ["+ARG_SUPPRESS_ERROR_CONSOLE+"] ["+ARG_SUPPRESS_CONSOLE+"]\n["+
+                                                ARG_RAW+"] ["+ARG_RAW_ONLY+"] ["+ARG_SUPPRESS_FILES+"]\n["+
+                                                ARG_REQUEST_DATUM+"] ["+ARG_REQUEST_STARTDATE+"] ["+ARG_REQUEST_ENDDATE+"] ["+ARG_REQUEST_MONTHS+"]\nSee readme for further use details.\n";
 
     private enum Flag {
         NIL, ENABLE_RAW_OUTPUT, ENABLE_FILE_OUTPUT, ENABLE_CONSOLE, ENABLE_VERBOSE_CONSOLE, ENABLE_DEBUG_CONSOLE, ENABLE_ERROR_CONSOLE
@@ -471,6 +477,12 @@ public class NOAAQuery {
         globalFlags.add(Flag.ENABLE_CONSOLE);
         globalFlags.add(Flag.ENABLE_ERROR_CONSOLE);
         globalFlags.add(Flag.ENABLE_FILE_OUTPUT);
+
+        //Help
+        if(arguments.contains(ARG_HELP)) {
+            System.out.println(OUTPUT_HELP);
+            System.exit(0);
+        }
 
         //Consoles
         if(arguments.contains(ARG_DEBUG)) {
